@@ -18,3 +18,20 @@
   * login/logout -> urls
   * login logic -> views, forms
 
+## django.contrib.auth
+* User : 기본 유저 모델 -> 권장 X, migrate 하기 어려움
+* AbstractUser : 상속 받아서 쓸 수 있는 유저 모델 -> 장고에서 기본적인 틀을 제공
+* AbstractBaseUser : 상속 받아서 쓸 수 있는 유저 모델 -> 처음부터 구현할 User를 쓸거면 이거를 대신 사용해라
+
+#### 사용법
+```python
+# models.py
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+# Create your models here.
+class User(AbstractUser):
+    pass
+```
+* setting.py 맨 아래에 AUTH_USER_MODEL = 'coplate.User' 추가
+* makemigrations, migrate
