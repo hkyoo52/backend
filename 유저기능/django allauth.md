@@ -35,3 +35,15 @@ class User(AbstractUser):
 ```
 * setting.py 맨 아래에 AUTH_USER_MODEL = 'coplate.User' 추가
 * makemigrations, migrate
+
+## admin 생성 및 설정
+```python
+# admin.py
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+
+# Register your models here.
+admin.site.register(User, UserAdmin)
+```
+* 이후에 python manage.py createsuperuser
