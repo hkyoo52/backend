@@ -203,5 +203,28 @@ path('email-confirmation-done',
 ```
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "account_email_confirmation_done"
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "account_email_confirmation_done"
-
 ```
+
+## 비밀번호 재설정
+```
+# setting.py
+PASSWORD_RESET_TIMEOUT_DAYS = 3  # 유효기간 3일
+```
+
+## 비밀번호 변경
+* html 변경 후
+```python
+# views.py
+from allauth.account.views import PasswordChangeView
+
+class CustomPasswordChangeView(PasswordChangeView):
+    def get_success_url(self):
+        return reverse('index')
+```
+```python
+# urls.py
+from coplate.views import CustomPasswordChangeView
+
+path('password/change/', CustomPasswordChangeView.as_view(), name='account_password_change'),
+```
+
