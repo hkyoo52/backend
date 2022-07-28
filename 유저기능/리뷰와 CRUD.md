@@ -45,8 +45,12 @@ MEDIA_URL = '/uploads/'
 ```
 ```python
 # urls.py
-from django.conf import setting
-from django.conf.curls.static import static
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
 ```
+
+## ImageFeild 다루기
+* pip install pillow
+* 
