@@ -61,6 +61,7 @@ admin.site.register(User, UserAdmin)
 * pip install django-allauth
 * django-allauth install 홈페이지에서 authentication_backends을 setting.py 맨 아래에 복붙
 * INSTALLED_APPS 에서 필수부분 복붙
+  * **반드시!!! allauth와 관련된 부분은 coplate 뒤에 있어야함!!!**
 * 혹시 social login 할거면 installed_app에서 해당하는 부분 복붙
 * SITE_ID 복붙
 * setting.py 맨 아래에 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 붙인다.
