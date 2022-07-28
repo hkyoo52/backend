@@ -1,8 +1,17 @@
+## 이론
+
 #### 패키지
 * 파이썬 파일의 모음 
 
 #### 앱
 * 장고 프로젝트를 이루는 하나의 component -> setting.py에 INSTALLED_APPS 목록에 장고 프로젝트 있음
+
+#### Session
+* 웹사이트 방문에 대한 기록
+* 로그인 할 경우 Response 때 session 포함해서 보냄
+* Client는 쿠키라는 곳에 session 저장, request 할때 같이 보냄
+* 서버는 다시 response 할때 session 정보를 보고 로그인 유저라고 판단
+* 로그아웃하면 쿠키에 session 없앰
 
 ## django-allauth
 * 일반적으로 django-allauth에 urls, views, forms 사용하고 django.contrib.auth에서 models 사용한다.
@@ -73,8 +82,34 @@ urlpatterns = [
   * ACCOUNT_SIGNUP_REDIRECT_URL = 'index'
   * LOGIN_REDIRECT_URL = 'index'
   * ACCOUNT_LOGOUT_ON_GET = True
-  * 
+  * 만약 로그인 아이디를 email로 하려면
+    * ACCOUNT_AUTHENTICATION_METHOD = 'email'
+    * ACCOUNT_EMAIL_REQUIRED = True  # 반드시 회원가입시 email 넣어라
+  * ACCOUNT_SESSION_REMEMBER = True  # 로그인을 로그아웃할때까지 유지해라
+  * SESSION_COOKIE_AGE = 36000   #  10시간동안 세션을 유지해라(그 이후에는 다시 로그인 필요) 안 사용하면 2주동안 세션 유지
+
 ## 현재 유저 정보 접근
 * views.py에서는 request.user로 접근
 * template에서는 {{ user }}
-* 
+
+## Template에 user에 주는게 username이 아니라 다른것을 주고 싶으면
+```python
+# models.py
+class User(AbstractUser):
+  def __str__(self):
+    return self.email    # email을 user에 해당한다.
+```
+
+
+## 닉네임 만들기
+```python
+# manage.py
+class User(AbstractUser):
+    nickname = models.CharField(max_length=15, unique=True, null=True)
+
+    def __str__(self):
+        return self.name
+```
+* admin 파일에 UserAdmin.fieldsets += (("Custom fields", {'fields' : ('nickname',)}),) 추가
+* setting.py에서 ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
+
