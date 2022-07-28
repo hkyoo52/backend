@@ -113,3 +113,95 @@ class User(AbstractUser):
 * admin 파일에 UserAdmin.fieldsets += (("Custom fields", {'fields' : ('nickname',)}),) 추가
 * setting.py에서 ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
 
+## 유효성 검사
+#### 언어 변경
+* setting.py -> LANGUAGE_CODE = 'ko'
+
+#### 오류 메세지 수정
+```python
+# models.py
+class User(AbstractUser):
+    nickname = models.CharField(
+        max_length=15, 
+        unique=True, 
+        null=True,
+        error_messages = {'unique':'이미 사용중인 닉네임'})
+
+    def __str__(self):
+        return self.name
+```
+
+### 유효성 검사
+#### Password는 class형
+* 앱에 validators.py를 생성
+```python
+class CustomPasswordValidator:
+    def validate(self, password, user=None):
+        if (
+                len(password) < 8 or
+                not contains_uppercase_letter(password) or
+                not contains_lowercase_letter(password) or
+                not contains_number(password) or
+                not contains_special_character(password)
+        ):
+            raise ValidationError("8자 이상의 영문 대/소문자, 숫자, 특수문자 조합이어야 합니다.")
+
+    def get_help_text(self):
+        return "8자 이상의 영문 대/소문자, 숫자, 특수문자 조합을 입력해 주세요."
+```
+* setting.py에서 
+```python
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'coplate.validators.CustomPasswordValidator',
+    },
+   
+]
+```
+#### 아이디는 함수형
+```python
+# validators.py
+def contains_special_character(value):
+    for char in value:
+        if char in string.punctuation:
+            return True
+    return False
+
+def validate_no_special_characters(value):
+    if contains_special_character(value):
+        raise ValidationError("특수문자를 포함할 수 없습니다.")
+```
+```python
+# models.py
+from .validators import validate_no_special_characters
+
+class User(AbstractUser):
+    nickname = models.CharField(
+        max_length=15, 
+        unique=True, 
+        null=True,
+        validators = [validate_no_special_characters],
+        error_messages = {'unique':'이미 사용중인 닉네임'})
+
+    def __str__(self):
+        return self.name
+```
+
+## email 인증
+* setting.py 에서 ACCOUNT_EMAIL_VARIFICATION = 'optional' ('mandatory' : 필수, 'optional' : 선택, 'none' : 없음)
+* ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+* 프로젝트 urls.py에 
+```python
+from django.views.generic import TemplateView
+urlpatterns = [
+path('email-confirmation-done', 
+    TemplateView.as_view(template_name = 'coplate/email_confirmation_done.html'), name='account_email_confirmation_done'),
+]
+```
+* template에 email_confirmation_done.html 생성
+* setting.py에 
+```
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "account_email_confirmation_done"
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "account_email_confirmation_done"
+
+```
