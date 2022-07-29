@@ -99,5 +99,16 @@ Review.objects.filter(author__nickname=='환규')  # 환규가 작성한거 찾�
 
 
 
+## 내가 가진 데이터 id 전부 보는 법
+```
+# shell
+from coplate.models import User
+for u in User.objects.all():
+...   print(u.id)
+```
 
 
+## 데이터 대량 추가
+* 데이터와 관련된 json 파일을 만들고 프로젝트 바로 아래에 넣는다. (이름 : reviews.json)
+* 해당하는 이미지를 media/review_pics에 넣는다.
+* python manage.py loaddata reviews.json 입력한다
