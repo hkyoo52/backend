@@ -1,3 +1,16 @@
+## 이론
+#### django
+* field에 몇개의 값중 1개만 들어갈때 사용
+* field에 들어갈 choice를 리스트 형태로 만들고 그 리스트를 choices 옵션에 넣어준다.
+* Form을 사용하면 choice 중 하나 고르게 한다.
+* 이후 불를때는 (모델에 오브젝트).필드.초이스  <- 이런식으로 부름
+
+#### ForeignKey
+* 모델과 모델간의 관계 모델링
+* 1 : N 관계를 모델링함 (N의 역활)
+* on_delete 파라미터에 따라 유저가 삭제시 전부 삭제할것인지, 유저 이름을 null값으로 바꿀건지 결정
+
+
 ## 리뷰 기능 구현
 #### 이메일 관련 유효성 검사를 위해서
 ```python
@@ -71,7 +84,6 @@ admin.site.register(Review)
 * 이후 리뷰에 들어간 데이터를 다룰려면 r = Review.objects.all().first() 라고 두고 r로 다루면 됨
     * img = r.image1
     * url = r.image1.url
-```
 
 
 ## 모델과 모델 사이에 관계 만들기
