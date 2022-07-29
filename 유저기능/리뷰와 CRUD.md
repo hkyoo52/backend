@@ -112,3 +112,61 @@ for u in User.objects.all():
 * 데이터와 관련된 json 파일을 만들고 프로젝트 바로 아래에 넣는다. (이름 : reviews.json)
 * 해당하는 이미지를 media/review_pics에 넣는다.
 * python manage.py loaddata reviews.json 입력한다
+
+
+## 초기 페이지 다양한 기능 구현 -> ListView
+```python
+# views.spy
+class IndexView(ListView):
+    model = Review
+    template_name = 'coplate/index.html'
+    context_objectname = 'reviews'  # template에서 reivews라는 이름으로 부름
+    paginate_by = 4
+    ordering = ['-dt_created']
+
+# urls.py
+path('',views.IndexView.as_view(), name='index'),
+
+```
+
+## Review 자세히 보는 페이지 만들기
+```python
+# views.py
+class ReviewDetailView(DetailView):
+    model = Review
+    template_name = 'coplate/review_detail.html'
+    pk_url_kwarg = 'review_id'   # urls.py에서 id 받는 이름이 review_id
+    
+# urls.py    
+path('reviews/new/', views.ReviewCreateView.as_view(), name='review-create')    
+```
+
+## Review 생성 페이지 만들기
+```python
+# forms.py
+from .models import User, Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        # field는 models.py에서 내가 자동으로 받는 것을 제외한 전부를 적어서 넣는다.
+        fields = ['title', 
+                'restaurant_name',
+                'restaurant_link',
+                'rating',
+                'image1','image2','image3',
+                'content',]
+
+        # 장고에서 라디오 형식으로 클릭하게 만들려면 아래처럼 해야됨!!
+        widgets = {
+            "rating":forms.RadioSelect
+        }
+        
+# views.py
+from .forms import ReviewForm
+
+class ReviewCreateView(CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'coplate/review_form.html'
+```
