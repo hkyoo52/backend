@@ -53,4 +53,39 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
 
 ## ImageFeild 다루기
 * pip install pillow
-* 
+```python
+# models.py
+class Review(models.Model):
+    ~~~
+    image1 = models.ImageField(upload_to='review_pics')
+    image2 = models.ImageField(upload_to='review_pics', blank=True)
+    image3 = models.ImageField(upload_to='review_pics', blank=True)
+    ~~~
+```
+```python
+# admin.py
+
+admin.site.register(Review)
+```
+* admin 사이트에서 리뷰 사용 가능!!
+* 이후 리뷰에 들어간 데이터를 다룰려면 r = Review.objects.all().first() 라고 두고 r로 다루면 됨
+    * img = r.image1
+    * url = r.image1.url
+```
+
+
+## 모델과 모델 사이에 관계 만들기
+* models.py에 Review 안에 author = models.ForeignKey(User, on_delete=models.CASCADE) 추가 -> 이후 author로 불러올 수 있음
+* makemigrations, (변경 사항이 있으면 1을 넣고 나서 id 정해줘) , migrate
+```
+# shell
+from coplate.models import Review, User
+
+Review.objects.filter(author__id=1)  # id=1 인거 찾아
+Review.objects.filter(author__nickname=='환규')  # 환규가 작성한거 찾아
+```
+
+
+
+
+
