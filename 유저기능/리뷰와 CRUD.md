@@ -120,7 +120,7 @@ for u in User.objects.all():
 class IndexView(ListView):
     model = Review
     template_name = 'coplate/index.html'
-    context_objectname = 'reviews'  # template에서 reivews라는 이름으로 부름
+    context_object_name = 'reviews'  # template에서 reivews라는 이름으로 부름
     paginate_by = 4
     ordering = ['-dt_created']
 
