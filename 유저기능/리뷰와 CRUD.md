@@ -170,3 +170,21 @@ class ReviewCreateView(CreateView):
     form_class = ReviewForm
     template_name = 'coplate/review_form.html'
 ```
+
+
+## 리뷰 작성자를 현재 로그인 한 사람으로 하기
+```python
+class ReviewCreateView(CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'coplate/review_form.html'
+
+    def form_valid(self, form):
+        # author 정의하기, class면 request.user, 함수면 self.request.user
+        form.instance.author = self.request.user
+        return super().form_valid(form)         # ReviewCreateView에 있는 form_valid 사용해라
+    
+    # 성공적으로 되면 riview_id와 같이 전달해라
+    def get_success_url(self):
+        return reverse('review-detail', kwargs = {'review_id':self.object.id})
+```
