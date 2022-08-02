@@ -178,7 +178,8 @@ class ReviewCreateView(CreateView):
     model = Review
     form_class = ReviewForm
     template_name = 'coplate/review_form.html'
-
+    
+    # form valid는 데이터가 유효할때 모델 object를 만들고 저장한다.
     def form_valid(self, form):
         # author 정의하기, class면 request.user, 함수면 self.request.user
         form.instance.author = self.request.user
@@ -187,4 +188,37 @@ class ReviewCreateView(CreateView):
     # 성공적으로 되면 riview_id와 같이 전달해라
     def get_success_url(self):
         return reverse('review-detail', kwargs = {'review_id':self.object.id})
+```
+
+## 리뷰 수정
+```python
+# urls.py
+path('reviews/<int:review_id>/edit', views.ReviewUpdateView.as_view(),name='review-update')
+
+# views.py
+class ReviewUpdateView(UpdaeView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'colpate/review_form.html'
+    pk_url_kwarg = 'review_id'
+
+    # 성공적으로 되면 riview_id와 같이 전달해라
+    def get_success_url(self):
+        return reverse('review-detail', kwargs = {'review_id':self.object.id})
+
+```
+
+## 리뷰 삭제
+```python
+# urls.py
+path('reviews/<int:review_id>/delete/', views.ReviewDeleteView.as_view(),name='review-delete'),
+
+# views.py
+class ReviewDeleteView(DeleteView):
+    model = Review
+    template_name = 'coplate/review_confirm_delete.html'
+    pk_url_kwarg = 'review_id'
+
+    def get_succes_rul(self):
+        return reverse('index')
 ```
